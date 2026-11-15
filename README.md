@@ -1,28 +1,15 @@
-# Entrelinhas — Sprint 1 e 2
+# Entrelinhas
 
-Projeto de Ana Luiza e Gabrielle Kyoko.
+Projeto de Ana Luiza e Gabrielle Kyoko para apoiar a autonomia docente ao adaptar materiais do RCO à realidade de cada turma.
 
-O uso obrigatório do RCO e de materiais padronizados pode deixar pouco espaço para adequar aulas às necessidades de cada turma. O Entrelinhas oferece a docentes da educação básica um espaço para registrar perfis de turmas e adaptar o conteúdo-base ao contexto de seus estudantes. O fluxo de criação tem três passos curtos e termina em um editor no qual a decisão permanece com o professor. Nesta Sprint 1, o frontend em Next.js usa dados demonstrativos e mantém alterações apenas durante a sessão. A geração e a regeneração de seções são simulações claramente identificadas. Na Sprint 2, a IA deverá propor caminhos a partir do conteúdo, do objetivo e do perfil da turma, sujeitos à revisão docente.
-
-## Executar
-
-Requisitos: Node.js 20.9 ou superior e npm.
-
-```bash
-npm install
-npm run dev
-```
-
-Abra http://localhost:3000. Para gerar a versão estática, use `npm run build`; os arquivos ficam em `out/`. Publique essa pasta em uma hospedagem de arquivos estáticos para apresentar a URL na review.
+Repositório público da equipe: https://github.com/gab-kyoko/Atividade_03_Desenvolvimento_WEB
 
 ## Estrutura
 
-- `src/app`: página, layout e estilos.
-- `src/components/ui`: botão, campo e cartão reutilizáveis.
-- `src/components/workspace`: dashboard, turmas, fluxo guiado, editor e histórico.
-- `src/data/workspaceMock.ts`: turmas e planos demonstrativos.
-- `src/types/workspace.ts`: formatos compartilhados pela interface.
+- `frontend/`: Next.js, interface com dados demonstrativos da Sprint 1. Leia `frontend/README.md` para instalar, executar e gerar o site estático.
+- `backend/`: FastAPI e integração real com Gemini para a Sprint 2. Leia `backend/README.md` para executar, testar e usar o endpoint.
+- `render.yaml`: configuração de publicação da API no Render.
 
-## Limites desta sprint
+## Estado das sprints
 
-O protótipo não usa API, autenticação ou banco de dados. Recarregar a página restaura os dados demonstrativos. A sugestão é montada localmente a partir de um modelo e não consulta IA real. O editor usa campos de texto simples nesta etapa; um editor rico pode ser incorporado depois que o fluxo principal estiver validado. Essas integrações pertencem às próximas sprints.
+O backend da Sprint 2 oferece `POST /api/v1/planos/sugerir`, com schemas compatíveis com o perfil de turma do frontend. O frontend continua usando dados mockados nesta etapa; o consumo da API e o login pertencem à Sprint 3. A chave de IA deve ser configurada apenas no servidor como `GEMINI_API_KEY`. A Sprint 2 só estará pronta para a review quando a API estiver publicada e uma chamada real ao provedor retornar uma sugestão em sua URL pública.
