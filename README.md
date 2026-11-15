@@ -1,8 +1,8 @@
-# Adapta — Sprint 1
+# Entrelinhas — Sprint 1 e 2
 
 Projeto de Ana Luiza e Gabrielle Kyoko.
 
-O uso obrigatório do RCO e de materiais padronizados pode deixar pouco espaço para adequar aulas às necessidades de cada turma. O Adapta oferece a docentes da educação básica um espaço para registrar perfis de turmas e adaptar o conteúdo-base ao contexto de seus estudantes. O fluxo de criação tem três passos curtos e termina em um editor no qual a decisão permanece com o professor. Nesta Sprint 1, o frontend em Next.js usa dados demonstrativos e mantém alterações apenas durante a sessão. A geração e a regeneração de seções são simulações claramente identificadas. Na Sprint 2, a IA deverá propor caminhos a partir do conteúdo, do objetivo e do perfil da turma, sujeitos à revisão docente.
+O uso obrigatório do RCO e de materiais padronizados pode deixar pouco espaço para adequar aulas às necessidades de cada turma. O Entrelinhas oferece a docentes da educação básica um espaço para registrar perfis de turmas e adaptar o conteúdo-base ao contexto de seus estudantes. O fluxo de criação tem três passos curtos e termina em um editor no qual a decisão permanece com o professor. Nesta Sprint 1, o frontend em Next.js usa dados demonstrativos e mantém alterações apenas durante a sessão. A geração e a regeneração de seções são simulações claramente identificadas. Na Sprint 2, a IA deverá propor caminhos a partir do conteúdo, do objetivo e do perfil da turma, sujeitos à revisão docente.
 
 ## Executar
 
