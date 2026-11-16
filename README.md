@@ -2,6 +2,8 @@
 
 Projeto de Ana Luiza e Gabrielle Kyoko.
 
+**Site publicado:** [Acessar o Entrelinha](https://entrelinhas-at3-zmth.onrender.com/)
+
 O uso obrigatório do RCO e de materiais padronizados pode deixar pouco espaço para adequar aulas às necessidades de cada turma. O Entrelinha oferece a docentes da educação básica um espaço para registrar perfis de turmas e adaptar o conteúdo-base ao contexto de seus estudantes. O fluxo de criação tem três passos curtos e termina em um editor no qual a decisão permanece com o professor. Na Sprint 2, a IA propõe abertura, desenvolvimento e fechamento a partir do conteúdo, do objetivo e do perfil da turma, sempre sujeitos à revisão docente.
 
 ## Executar

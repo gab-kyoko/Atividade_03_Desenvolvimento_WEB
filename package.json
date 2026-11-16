@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "build": "npm --prefix frontend ci && npm --prefix frontend run build && node -e \"require('fs').cpSync('frontend/out','out',{recursive:true})\"",
-    "start": "npx serve@latest out -l $PORT"
+    "start": "serve out -l $PORT"
+  },
+  "dependencies": {
+    "serve": "14.2.8"
   }
 }
