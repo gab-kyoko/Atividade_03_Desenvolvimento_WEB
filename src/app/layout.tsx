@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Entrelinhas",
+  title: "Entrelinha",
   description:
     "Adaptações de aula com apoio de IA, com a decisão sempre do professor.",
 };

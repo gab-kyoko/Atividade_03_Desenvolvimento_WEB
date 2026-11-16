@@ -110,8 +110,8 @@ export function Workspace() {
         </main>
         {/* rodapé */}
         <footer>
-          Adapta · Ana Luiza e Gabrielle Kyoko{" "}
-          <span>Sprint 1 — protótipo com dados mockados</span>
+          Entrelinha · Ana Luiza e Gabrielle Kyoko{" "}
+          <span>Sprint 2 — planejamento com apoio de IA</span>
         </footer>
       </div>
     </div>

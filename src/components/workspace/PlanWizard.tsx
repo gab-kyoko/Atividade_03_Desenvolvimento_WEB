@@ -2,6 +2,8 @@
 import { useState } from "react";
 import type { Objetivo, Plano, Turma } from "@/types/workspace";
 
+type SugestaoDaIa = Pick<Plano, "titulo" | "secoes">;
+
 export function PlanWizard({
   turmas,
   onCreate,
@@ -19,34 +21,47 @@ export function PlanWizard({
   const [error, setError] = useState("");
   // turma selecionada
   const turma = turmas.find((t) => t.id === turmaId);
-  // simula a IA com setTimeout e um texto montado com o perfil da turma
-  const generate = () => {
+  const generate = async () => {
     if (!turma) {
       setError("Cadastre uma turma antes de criar um plano.");
       return;
     }
+    if (material.trim().length < 10) {
+      setError("Descreva o conteúdo-base com pelo menos 10 caracteres.");
+      return;
+    }
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+    if (!apiUrl) {
+      setError("Configure NEXT_PUBLIC_API_URL para usar a sugestão por IA.");
+      return;
+    }
     setLoading(true);
-    window.setTimeout(() => {
-      // título = primeira frase do material (máx. 70 caracteres)
-      const tema =
-        material.trim().split(/[.\n]/)[0].slice(0, 70) || "Novo planejamento";
+    setError("");
+    try {
+      const response = await fetch(`${apiUrl}/api/v1/planos/sugerir`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ turma, material: material.trim(), objetivo }),
+      });
+      const body = (await response.json()) as SugestaoDaIa | { detail?: string };
+      if (!response.ok || !("secoes" in body)) {
+        throw new Error("detail" in body ? body.detail : "Não foi possível gerar a sugestão.");
+      }
       onCreate({
         id: Date.now(),
         turmaId,
-        titulo: tema,
+        titulo: body.titulo,
         material: material.trim(),
         objetivo,
         status: "Rascunho",
         atualizado: new Date().toISOString().slice(0, 10),
-        secoes: {
-          abertura: `Apresente ${tema.toLowerCase()} por meio de uma pergunta ligada a ${turma.interesses.toLowerCase()}. Convide a turma a compartilhar o que já sabe.`,
-          desenvolvimento: `Retome o conteúdo-base do RCO e proponha uma atividade em grupos. Considere esta dificuldade observada: ${turma.dificuldades}. Ajuste a profundidade conforme o objetivo de ${objetivo.toLowerCase()}.`,
-          fechamento:
-            "Peça uma síntese breve: o que aprenderam, qual dúvida permanece e um exemplo do cotidiano em que o conteúdo aparece.",
-        },
+        secoes: body.secoes,
       });
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Não foi possível acessar a IA.");
+    } finally {
       setLoading(false);
-    }, 900);
+    }
   };
   return (
     <div className="wizard">
@@ -212,9 +227,14 @@ export function PlanWizard({
               </p>
             </div>
             <div className="simulation-note">
-              ✦ Nesta Sprint 1, a sugestão é demonstrativa e segue um modelo
-              fixo. A integração real com IA está prevista para a Sprint 2.
+              ✦ A IA propõe uma abertura, um desenvolvimento e um fechamento.
+              Revise e personalize o resultado antes de aplicar com a turma.
             </div>
+            {error && (
+              <p role="alert" className="form-error">
+                {error}
+              </p>
+            )}
             <div className="wizard-actions">
               <button
                 className="secondary-action"
@@ -225,12 +245,12 @@ export function PlanWizard({
               </button>
               <button
                 className="primary-action"
-                onClick={generate}
+                onClick={() => void generate()}
                 disabled={loading}
               >
                 {loading
-                  ? `Preparando proposta para ${turma?.nome}...`
-                  : "Gerar sugestão demonstrativa →"}
+                  ? `Gerando proposta para ${turma?.nome}...`
+                  : "Gerar sugestão com IA →"}
               </button>
             </div>
           </>

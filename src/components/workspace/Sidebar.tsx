@@ -18,7 +18,7 @@ export function Sidebar({
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        adapta<span>✳</span>
+        Entrelinha<span>✳</span>
         <small>ESPAÇO DOCENTE</small>
       </div>
       <nav aria-label="Navegação principal">
