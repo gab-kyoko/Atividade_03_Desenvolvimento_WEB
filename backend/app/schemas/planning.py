@@ -37,3 +37,15 @@ class ConteudoGerado(BaseModel):
 class SugestaoResponse(ConteudoGerado):
     modelo: str
     aviso: str = "Sugestão assistida por IA. Revise e adapte antes de aplicar com a turma."
+
+
+class MaterialApoioRequest(SugestaoRequest):
+    titulo: str = Field(min_length=5, max_length=120)
+    secoes: SecoesPlano
+
+
+class MaterialApoioGerado(BaseModel):
+    titulo: str = Field(min_length=5, max_length=120)
+    orientacoes: str = Field(min_length=20, max_length=1500)
+    atividades: list[str] = Field(min_length=1, max_length=5)
+    perguntas: list[str] = Field(min_length=1, max_length=5)

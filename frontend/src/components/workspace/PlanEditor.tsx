@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { apiUrl } from "@/services/api";
 import type { Plano, Secao, Turma } from "@/types/workspace";
 
 // seções fixas do plano, cada uma com uma dica
@@ -25,11 +26,13 @@ export function PlanEditor({
   turma,
   onSave,
   onBack,
+  token,
 }: {
   plano: Plano;
   turma?: Turma;
   onSave: (plano: Plano) => void;
   onBack: () => void;
+  token: string;
 }) {
   // cópia editável do plano
   const [draft, setDraft] = useState(plano);
@@ -40,6 +43,49 @@ export function PlanEditor({
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [note, setNote] = useState("");
   const [notice, setNotice] = useState("");
+  const [generatingMaterial, setGeneratingMaterial] = useState(false);
+  const generateMaterial = async () => {
+    if (!turma) {
+      setNotice("Selecione uma turma para gerar o material de apoio.");
+      return;
+    }
+    if (!apiUrl) {
+      setNotice("Configure NEXT_PUBLIC_API_URL no frontend.");
+      return;
+    }
+    setGeneratingMaterial(true);
+    setNotice("");
+    try {
+      const response = await fetch(`${apiUrl}/api/v1/planos/material-apoio`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          turma,
+          material: draft.material,
+          objetivo: draft.objetivo,
+          titulo: draft.titulo,
+          secoes: draft.secoes,
+        }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({})) as { detail?: string };
+        throw new Error(result.detail ?? "Não foi possível gerar o material de apoio.");
+      }
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "material-de-apoio.docx";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      setNotice("Material de apoio baixado. Revise o arquivo antes de usar com a turma.");
+    } catch (cause) {
+      setNotice(cause instanceof Error ? cause.message : "Não foi possível gerar o material de apoio.");
+    } finally {
+      setGeneratingMaterial(false);
+    }
+  };
   // atualiza só a seção que mudou
   const update = (key: Secao, value: string) =>
     setDraft((old) => ({ ...old, secoes: { ...old.secoes, [key]: value } }));
@@ -156,6 +202,9 @@ export function PlanEditor({
             {notice}
           </span>
         )}
+        <button className="secondary-action" onClick={() => void generateMaterial()} disabled={generatingMaterial}>
+          {generatingMaterial ? "Gerando material..." : "Gerar material de apoio (.docx)"}
+        </button>
         <button className="secondary-action" onClick={() => setApplying(true)}>
           Marcar como Aplicado
         </button>

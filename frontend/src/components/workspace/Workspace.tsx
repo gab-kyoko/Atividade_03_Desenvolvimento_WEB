@@ -137,6 +137,7 @@ export function Workspace() {
               turma={turmas.find((t) => t.id === selected.turmaId)}
               onSave={savePlan}
               onBack={() => navigate("historico")}
+              token={token}
             />
           )}
         </main>

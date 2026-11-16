@@ -42,4 +42,4 @@ O banco local usa SQLite (`backend/entrelinha.db`). Em produção, configure `DA
 
 ## Sprint 3
 
-O frontend usa cadastro e login, envia JWT à API e salva turmas e planos no banco por usuário. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Os dados mockados da Sprint 1 permanecem no código como referência, mas a área autenticada consulta os dados persistidos.
+O frontend usa cadastro e login, envia JWT à API e salva turmas e planos no banco por usuário. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Na revisão do plano, a opção **Gerar material de apoio** cria uma folha de atividades e perguntas em `.docx` editável para a turma. Os dados mockados da Sprint 1 permanecem no código como referência, mas a área autenticada consulta os dados persistidos.

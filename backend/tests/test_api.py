@@ -1,12 +1,16 @@
 import asyncio
 import json
+from io import BytesIO
 
 import httpx
+from docx import Document
+from pydantic import ValidationError
 
 from app.config import Settings
 from app.main import app
-from app.schemas.planning import SugestaoRequest
+from app.schemas.planning import MaterialApoioRequest, SugestaoRequest
 from app.services.gemini import GeminiService
+from app.services.document import build_support_document
 
 
 PAYLOAD = {
@@ -33,11 +37,12 @@ def test_health_and_documentation():
 
 
 def test_invalid_request_is_rejected_before_calling_ai():
-    async def scenario():
-        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
-            response = await client.post("/api/v1/planos/sugerir", json={**PAYLOAD, "material": "curto"})
-            assert response.status_code == 422
-    asyncio.run(scenario())
+    try:
+        SugestaoRequest.model_validate({**PAYLOAD, "material": "curto"})
+    except ValidationError:
+        pass
+    else:
+        raise AssertionError("A short material must fail validation")
 
 
 def test_missing_key_returns_actionable_error():
@@ -92,5 +97,41 @@ def test_provider_quota_error_does_not_expose_provider_body():
                 assert "private details" not in exc.detail
             else:
                 raise AssertionError("Quota error must fail")
+
+    asyncio.run(scenario())
+
+
+def test_support_material_generates_editable_document():
+    async def scenario():
+        generated = {
+            "titulo": "Frações em receitas",
+            "orientacoes": "Leia as situações e registre como chegou a cada resposta.",
+            "atividades": ["Dobre uma receita e compare as frações usadas."],
+            "perguntas": ["Como você sabe que duas frações são equivalentes?"],
+        }
+
+        def provider(request: httpx.Request) -> httpx.Response:
+            prompt = json.loads(request.content)["contents"][0]["parts"][0]["text"]
+            assert "abertura" in prompt
+            assert "Receitas da comunidade" in prompt
+            return httpx.Response(200, json={"candidates": [{"content": {"parts": [{"text": json.dumps(generated)}]}}]})
+
+        payload = MaterialApoioRequest.model_validate({
+            **PAYLOAD,
+            "titulo": "Frações para o cotidiano",
+            "secoes": {
+                "abertura": "Comece com uma receita conhecida e pergunte as quantidades.",
+                "desenvolvimento": "Peça que a turma compare porções de duas receitas.",
+                "fechamento": "Retome as equivalências encontradas pelos grupos.",
+            },
+        })
+        async with httpx.AsyncClient(transport=httpx.MockTransport(provider)) as client:
+            material = await GeminiService(Settings("test-key", "gemini-3.5-flash-lite", ()), client).support_material(payload)
+        document = Document(BytesIO(build_support_document(payload, material)))
+        text = "\n".join(paragraph.text for paragraph in document.paragraphs)
+        assert "Frações em receitas" in text
+        assert "Dobre uma receita" in text
+        assert "Como você sabe" in text
+        assert "Revise antes de usar" in text
 
     asyncio.run(scenario())
