@@ -45,7 +45,7 @@ O banco local usa SQLite (`backend/entrelinha.db`). Em produção, configure `DA
 
 ## Sprint 3
 
-O frontend usa cadastro e login, envia JWT às rotas protegidas e carrega turmas e planos da API. Não há dados mockados na interface publicada. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Na revisão do plano, a opção **Gerar material de apoio** cria uma folha de atividades e perguntas em `.docx` editável para a turma.
+O frontend usa cadastro e login, envia JWT às rotas protegidas e carrega turmas e planos da API. Não há dados mockados na interface publicada. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Na revisão do plano, a opção **Gerar material de apoio** cria um `.docx` editável com texto explicativo e questões para a turma.
 
 Publicação: [frontend](https://entrelinhas-at3-zmth.onrender.com) e [API](https://entrelinhas-api-sic8.onrender.com/health). No Render, configure `NEXT_PUBLIC_API_URL` no frontend e `CORS_ORIGINS`, `JWT_SECRET`, `DATABASE_URL` e `GEMINI_API_KEY` na API. `CORS_ORIGINS` recebe as origens completas, separadas por vírgula. `DATABASE_URL` deve apontar para PostgreSQL; o SQLite local não preserva dados após reinícios do serviço gratuito. O login e a geração por IA precisam das duas aplicações publicadas.
 

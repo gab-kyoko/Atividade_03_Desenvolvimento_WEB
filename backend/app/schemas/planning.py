@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class TurmaContexto(BaseModel):
@@ -46,6 +46,12 @@ class MaterialApoioRequest(SugestaoRequest):
 
 class MaterialApoioGerado(BaseModel):
     titulo: str = Field(min_length=5, max_length=120)
-    orientacoes: str = Field(min_length=20, max_length=1500)
-    atividades: list[str] = Field(min_length=1, max_length=5)
-    perguntas: list[str] = Field(min_length=1, max_length=5)
+    texto_explicativo: str = Field(min_length=100, max_length=4000)
+    questoes: list[str] = Field(min_length=3, max_length=5)
+
+    @field_validator("questoes")
+    @classmethod
+    def validate_questions(cls, questions: list[str]) -> list[str]:
+        if any(not question.strip().endswith("?") for question in questions):
+            raise ValueError("Cada questão deve ser uma pergunta.")
+        return [question.strip() for question in questions]

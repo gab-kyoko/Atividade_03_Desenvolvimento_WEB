@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from app.config import Settings
 from app.main import app
-from app.schemas.planning import MaterialApoioRequest, SugestaoRequest
+from app.schemas.planning import MaterialApoioGerado, MaterialApoioRequest, SugestaoRequest
 from app.services.gemini import GeminiService
 from app.services.document import build_support_document
 
@@ -105,9 +105,17 @@ def test_support_material_generates_editable_document():
     async def scenario():
         generated = {
             "titulo": "Frações em receitas",
-            "orientacoes": "Leia as situações e registre como chegou a cada resposta.",
-            "atividades": ["Dobre uma receita e compare as frações usadas."],
-            "perguntas": ["Como você sabe que duas frações são equivalentes?"],
+            "texto_explicativo": (
+                "Frações equivalentes representam a mesma quantidade, mesmo quando usam "
+                "números diferentes. Podemos multiplicar numerador e denominador pelo mesmo "
+                "número para encontrá-las.\n\nEm uma receita, meia xícara equivale a duas "
+                "medidas de um quarto de xícara."
+            ),
+            "questoes": [
+                "Por que 1/2 e 2/4 representam a mesma quantidade?",
+                "Quantas medidas de 1/4 completam uma xícara?",
+                "Como você pode criar outra fração equivalente a 1/2?",
+            ],
         }
 
         def provider(request: httpx.Request) -> httpx.Response:
@@ -128,10 +136,27 @@ def test_support_material_generates_editable_document():
         async with httpx.AsyncClient(transport=httpx.MockTransport(provider)) as client:
             material = await GeminiService(Settings("test-key", "gemini-3.5-flash-lite", ()), client).support_material(payload)
         document = Document(BytesIO(build_support_document(payload, material)))
-        text = "\n".join(paragraph.text for paragraph in document.paragraphs)
+        paragraphs = [paragraph.text for paragraph in document.paragraphs]
+        text = "\n".join(paragraphs)
         assert "Frações em receitas" in text
-        assert "Dobre uma receita" in text
-        assert "Como você sabe" in text
+        assert paragraphs.index("Texto explicativo") < paragraphs.index("Questões")
+        assert "Frações equivalentes representam" in text
+        assert "Por que 1/2 e 2/4" in text
+        assert "Atividades" not in text
+        assert "Para pensar e conversar" not in text
         assert "Revise antes de usar" in text
 
     asyncio.run(scenario())
+
+
+def test_support_material_rejects_statements_in_place_of_questions():
+    try:
+        MaterialApoioGerado.model_validate({
+            "titulo": "Frações em receitas",
+            "texto_explicativo": "Frações equivalentes representam a mesma quantidade. " * 3,
+            "questoes": ["Compare duas frações.", "O que é uma fração?", "Por que são equivalentes?"],
+        })
+    except ValidationError:
+        pass
+    else:
+        raise AssertionError("Uma instrução não deve substituir uma questão")

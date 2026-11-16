@@ -18,17 +18,13 @@ def build_support_document(request: MaterialApoioRequest, content: MaterialApoio
     document.add_heading(content.titulo, 0)
     document.add_paragraph(f"{request.turma.disciplina} · {request.turma.nome}")
     document.add_paragraph("Nome: ____________________________________  Data: ____/____/______")
-    document.add_heading("Orientações", level=1)
-    document.add_paragraph(content.orientacoes)
+    document.add_heading("Texto explicativo", level=1)
+    for paragraph in content.texto_explicativo.split("\n\n"):
+        if paragraph.strip():
+            document.add_paragraph(paragraph.strip())
 
-    document.add_heading("Atividades", level=1)
-    for number, activity in enumerate(content.atividades, start=1):
-        document.add_paragraph(f"{number}. {activity}")
-        document.add_paragraph("________________________________________________________________________")
-        document.add_paragraph("________________________________________________________________________")
-
-    document.add_heading("Para pensar e conversar", level=1)
-    for number, question in enumerate(content.perguntas, start=1):
+    document.add_heading("Questões", level=1)
+    for number, question in enumerate(content.questoes, start=1):
         document.add_paragraph(f"{number}. {question}")
         document.add_paragraph("________________________________________________________________________")
 
