@@ -98,15 +98,13 @@ h2 {
 
 /* Logotipo e subtítulo institucional na sidebar */
 .sidebar-brand {
-  padding: 0 14px;
-  font-size: 27px;
-  font-weight: 700;
-  letter-spacing: -0.07em;
-  line-height: 1;
+  padding: 0 1px;
 }
 
-.sidebar-brand span {
-  color: var(--matcha);
+.sidebar-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .sidebar-brand small {
@@ -864,12 +862,14 @@ textarea {
 
   .sidebar-brand {
     padding: 0;
-    text-align: center;
-    font-size: 0;
+    width: 48px;
+    height: 44px;
+    overflow: hidden;
   }
 
-  .sidebar-brand span {
-    font-size: 25px;
+  .sidebar-brand img {
+    width: 132px;
+    max-width: none;
   }
 
   .sidebar-brand small,
@@ -912,13 +912,13 @@ textarea {
   }
 
   .sidebar-brand {
-    font-size: 18px;
-    text-align: left;
-    white-space: nowrap;
+    width: 126px;
+    height: auto;
+    flex: 0 0 126px;
   }
 
-  .sidebar-brand span {
-    font-size: 18px;
+  .sidebar-brand img {
+    width: 126px;
   }
 
   .sidebar nav {

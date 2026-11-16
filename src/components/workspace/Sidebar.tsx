@@ -18,7 +18,7 @@ export function Sidebar({
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        Entrelinha<span>✳</span>
+        <img src="/entrelinhas-logo.png" alt="Entrelinhas" width="190" height="63" />
         <small>ESPAÇO DOCENTE</small>
       </div>
       <nav aria-label="Navegação principal">
