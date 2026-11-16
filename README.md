@@ -33,7 +33,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-O banco local usa SQLite (`backend/entrelinha.db`). Em produção, configure `DATABASE_URL` para um PostgreSQL persistente. Consulte `backend/README.md` para endpoints e variáveis. O Render Free Postgres criado para a demonstração expira em 16/12/2026; exporte ou migre os dados antes dessa data.
+O banco local usa SQLite (`backend/entrelinha.db`).
 
 ## Estrutura
 
@@ -47,6 +47,6 @@ O banco local usa SQLite (`backend/entrelinha.db`). Em produção, configure `DA
 
 O frontend usa cadastro e login, envia JWT às rotas protegidas e carrega turmas e planos da API. Não há dados mockados na interface publicada. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Na revisão do plano, a opção **Gerar material de apoio** cria um `.docx` editável com texto explicativo e questões para a turma.
 
-Publicação: [frontend](https://entrelinhas-at3-zmth.onrender.com) e [API](https://entrelinhas-api-sic8.onrender.com/health). No Render, configure `NEXT_PUBLIC_API_URL` no frontend e `CORS_ORIGINS`, `JWT_SECRET`, `DATABASE_URL` e `GEMINI_API_KEY` na API. `CORS_ORIGINS` recebe as origens completas, separadas por vírgula. `DATABASE_URL` deve apontar para PostgreSQL; o SQLite local não preserva dados após reinícios do serviço gratuito. O login e a geração por IA precisam das duas aplicações publicadas.
+Publicação: [frontend](https://entrelinhas-at3-zmth.onrender.com) e [API](https://entrelinhas-api-sic8.onrender.com/health). No Render, configure `NEXT_PUBLIC_API_URL` no frontend e `CORS_ORIGINS`, `JWT_SECRET`, `DATABASE_URL` e `GEMINI_API_KEY` na API. `CORS_ORIGINS` recebe as origens completas, separadas por vírgula.o SQLite local não preserva dados após reinícios do serviço gratuito. O login e a geração por IA precisam das duas aplicações publicadas.
 
 Para a review, crie uma conta, cadastre uma turma, gere um plano com IA, revise e salve. Saia e entre novamente para conferir a leitura dos dados persistidos. Os comandos de teste são `python -m pytest` em `backend/` e `npm run build` em `frontend/`.
