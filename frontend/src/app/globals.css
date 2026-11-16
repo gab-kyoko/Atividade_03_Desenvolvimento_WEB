@@ -157,31 +157,6 @@ h2 {
   background: var(--matcha);
 }
 
-/* Card de destaque */
-.sidebar-footer {
-  margin-top: auto;
-  padding: 18px 14px;
-  background: #d9dbc9;
-  border-radius: 15px;
-}
-
-.sidebar-footer span {
-  font-size: 25px;
-  color: var(--matcha);
-}
-
-.sidebar-footer p {
-  margin: 7px 0 12px;
-  font-family: Georgia, serif;
-  font-size: 17px;
-  line-height: 1.25;
-}
-
-.sidebar-footer small {
-  font-size: 10px;
-  opacity: 0.75;
-}
-
 .workspace-main {
   min-width: 0;
   flex: 1;
@@ -877,7 +852,6 @@ textarea {
   }
 
   .sidebar-brand small,
-  .sidebar-footer,
   .welcome-art {
     display: none;
   }

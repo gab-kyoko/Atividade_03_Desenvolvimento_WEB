@@ -35,11 +35,6 @@ export function Sidebar({
           </button>
         ))}
       </nav>
-      <div className="sidebar-footer">
-        <span>✳</span>
-        <p>Mais espaço para ensinar do seu jeito.</p>
-        <small>Sprint 1 · demonstração</small>
-      </div>
     </aside>
   );
 }
