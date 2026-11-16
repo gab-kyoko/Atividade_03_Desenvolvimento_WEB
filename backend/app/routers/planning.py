@@ -2,6 +2,8 @@ from collections.abc import AsyncIterator
 
 import httpx
 from fastapi import APIRouter, Depends
+from app.auth import current_user
+from app.models import User
 
 from app.config import get_settings
 from app.schemas.planning import SugestaoRequest, SugestaoResponse
@@ -24,5 +26,6 @@ async def get_gemini_service() -> AsyncIterator[GeminiService]:
 async def sugerir_plano(
     payload: SugestaoRequest,
     service: GeminiService = Depends(get_gemini_service),
+    user: User = Depends(current_user),
 ) -> SugestaoResponse:
     return await service.suggest(payload)

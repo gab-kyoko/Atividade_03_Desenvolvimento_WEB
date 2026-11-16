@@ -12,5 +12,9 @@ services:
         value: gemini-3.5-flash-lite
       - key: GEMINI_API_KEY
         sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
       - key: CORS_ORIGINS
-        value: http://localhost:3000
+        value: http://localhost:3000,https://entrelinhas-at3-zmth.onrender.com,https://entrelinhas-at3.onrender.com

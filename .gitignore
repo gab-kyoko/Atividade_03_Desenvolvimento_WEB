@@ -1,7 +1,12 @@
 node_modules
 .next
+out/
+*.tsbuildinfo
 .env
 .venv/
 __pycache__/
 .pytest_cache/
 *.pyc
+*.db
+*.db-journal
+frontend/.env.local

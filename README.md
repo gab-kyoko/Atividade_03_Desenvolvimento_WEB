@@ -1,4 +1,4 @@
-# Entrelinha — Sprint 1 e 2
+# Entrelinha — Sprints 1 a 3
 
 Projeto de Ana Luiza e Gabrielle Kyoko.
 
@@ -6,25 +6,40 @@ O uso obrigatório do RCO e de materiais padronizados pode deixar pouco espaço 
 
 ## Executar
 
-Requisitos: Node.js 20.9 ou superior e npm.
+Requisitos: Node.js 20.9 ou superior e npm. O aplicativo Next.js fica em `frontend/`.
 
 ```bash
-npm install
+cd frontend
+npm ci
 npm run dev
 ```
 
-Abra http://localhost:3000. Para gerar a versão estática, use `npm run build`; os arquivos ficam em `out/`. Publique essa pasta em uma hospedagem de arquivos estáticos para apresentar a URL na review.
+Abra http://localhost:3000. Para gerar a versão estática, use `npm run build` dentro de `frontend/`; os arquivos ficam em `frontend/out/`. Os comandos da raiz mantêm compatibilidade com os serviços Render já configurados e copiam a saída para `out/`.
 
-Para a sugestão por IA, copie `.env.example` para `.env.local` e configure `NEXT_PUBLIC_API_URL` com a URL pública da API (ou `http://localhost:8000` durante o desenvolvimento local). A chave `GEMINI_API_KEY` permanece somente no backend/Render.
+Para a sugestão por IA, copie `frontend/.env.example` para `frontend/.env.local` e configure `NEXT_PUBLIC_API_URL` com a URL pública da API (ou `http://localhost:8000` durante o desenvolvimento local). No Render, a variável já está configurada nos frontends existentes. A chave `GEMINI_API_KEY` permanece somente no backend/Render.
+
+Para executar a API localmente, em outro terminal:
+
+```bash
+cd backend
+python -m venv .venv
+# ative o ambiente virtual conforme seu sistema
+pip install -r requirements.txt
+# configure GEMINI_API_KEY e JWT_SECRET (mínimo de 32 caracteres) no ambiente
+uvicorn app.main:app --reload
+```
+
+O banco local usa SQLite (`backend/entrelinha.db`). Em produção, configure `DATABASE_URL` para um PostgreSQL persistente. Consulte `backend/README.md` para endpoints e variáveis. O Render Free Postgres criado para a demonstração expira em 16/12/2026; exporte ou migre os dados antes dessa data.
 
 ## Estrutura
 
-- `src/app`: página, layout e estilos.
-- `src/components/ui`: botão, campo e cartão reutilizáveis.
-- `src/components/workspace`: dashboard, turmas, fluxo guiado, editor e histórico.
-- `src/data/workspaceMock.ts`: turmas e planos demonstrativos.
-- `src/types/workspace.ts`: formatos compartilhados pela interface.
+- `frontend/src/app`: página, layout e estilos.
+- `frontend/src/components/ui`: botão, campo e cartão reutilizáveis.
+- `frontend/src/components/workspace`: dashboard, turmas, fluxo guiado, editor e histórico.
+- `frontend/src/data/workspaceMock.ts`: turmas e planos demonstrativos.
+- `frontend/src/types/workspace.ts`: formatos compartilhados pela interface.
+- `backend/`: API FastAPI e integração Gemini.
 
-## Limites desta sprint
+## Sprint 3
 
-Os perfis de turma e os planos permanecem apenas nesta sessão; recarregar a página restaura os dados demonstrativos. A criação de planos consulta a API da Sprint 2, mas o editor usa campos de texto simples e a decisão final permanece com o docente. Não há autenticação nem banco de dados nesta etapa.
+O frontend usa cadastro e login, envia JWT à API e salva turmas e planos no banco por usuário. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Os dados mockados da Sprint 1 permanecem no código como referência, mas a área autenticada consulta os dados persistidos.

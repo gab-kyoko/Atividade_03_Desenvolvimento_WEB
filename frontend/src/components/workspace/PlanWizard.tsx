@@ -7,9 +7,11 @@ type SugestaoDaIa = Pick<Plano, "titulo" | "secoes">;
 export function PlanWizard({
   turmas,
   onCreate,
+  token,
 }: {
   turmas: Turma[];
   onCreate: (plano: Plano) => void;
+  token: string;
 }) {
   // etapa atual (1 a 3)
   const [step, setStep] = useState(1);
@@ -40,7 +42,7 @@ export function PlanWizard({
     try {
       const response = await fetch(`${apiUrl}/api/v1/planos/sugerir`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ turma, material: material.trim(), objetivo }),
       });
       const body = (await response.json()) as SugestaoDaIa | { detail?: string };

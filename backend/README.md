@@ -1,5 +1,11 @@
 # API Entrelinhas — Sprint 2
 
+## Sprint 3
+
+O backend agora inclui SQLModel (SQLite local ou PostgreSQL via `DATABASE_URL`), cadastro/login JWT e persistência de turmas e planos por usuário. Defina `JWT_SECRET` com pelo menos 32 caracteres aleatórios antes de iniciar a API. Para produção, configure `DATABASE_URL` com a URL interna do PostgreSQL na mesma região do serviço. A API cria as tabelas na inicialização.
+
+Endpoints autenticados: `GET/POST/PUT /api/v1/turmas`, `GET/POST/PUT /api/v1/planos` e `POST /api/v1/planos/sugerir`. Cadastro e login: `POST /api/v1/auth/register` e `/login`, enviando JSON com `email` e `password`. Use o `access_token` retornado como `Authorization: Bearer <token>`.
+
 FastAPI que recebe material do RCO, objetivo pedagógico e perfil da turma e solicita ao Gemini uma sugestão estruturada em abertura, desenvolvimento e fechamento. O docente revisa o texto antes de aplicar. Nenhum plano é persistido nesta sprint.
 
 ## Rodar localmente
