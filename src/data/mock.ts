@@ -13,7 +13,8 @@ export const adaptacoesMock: Adaptacao[] = [
     id: 2,
     turma: "9º A",
     conteudoBase: "Revolução Industrial",
-    dificuldade: "Interesse alto em impactos locais (indústria têxtil da região)",
+    dificuldade:
+      "Interesse alto em impactos locais (indústria têxtil da região)",
     adaptacao: "Aprofundar com estudo de caso da cidade",
   },
 ];

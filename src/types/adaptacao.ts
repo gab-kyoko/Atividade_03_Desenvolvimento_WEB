@@ -4,6 +4,6 @@ export type Adaptacao = {
   id: number;
   turma: string;
   conteudoBase: string; // o que o RCO prevê
-  dificuldade: string;  // o que observei em aula
-  adaptacao: string;    // o que vou fazer diferente
+  dificuldade: string; // o que observei em aula
+  adaptacao: string; // o que vou fazer diferente
 };

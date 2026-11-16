@@ -1,32 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --color-fundo: #E5E0D8;
-  --color-superficie: #E5D2B8;
-  --color-borda: #B3B792;
+  --color-fundo: #e5e0d8;
+  --color-superficie: #e5d2b8;
+  --color-borda: #b3b792;
   --color-primaria: #809671;
-  --color-destaque: #D2AB80;
-  --color-texto: #725C3A;
+  --color-destaque: #d2ab80;
+  --color-texto: #725c3a;
 }
 
 :root {
-  --paper: #f7f5f0;    /* Fundo principal */
-  --matcha: #809671;   /* Ações e destaques ativos */
-  --almond: #E5E0D8;   /* Fundo da barra lateral */
-  --pistache: #B3B792; /* Bordas sutis e elementos decorativos */
-  --chai: #D2AB80;     /* Tom de apoio */
-  --carob: #725C3A;    /* Cor principal de texto */
-  --vanilla: #E5D2B8;  /* Superfícies secundárias */
+  --paper: #f7f5f0; /* Fundo principal */
+  --matcha: #809671; /* Ações e destaques ativos */
+  --almond: #e5e0d8; /* Fundo da barra lateral */
+  --pistache: #b3b792; /* Bordas sutis e elementos decorativos */
+  --chai: #d2ab80; /* Tom de apoio */
+  --carob: #725c3a; /* Cor principal de texto */
+  --vanilla: #e5d2b8; /* Superfícies secundárias */
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* rolagem suave ao trocar de tela */
 html {
   scroll-behavior: smooth;
 }
 
+/* fundo e cor de texto padrão */
 body {
   margin: 0;
   background: var(--paper);
@@ -68,11 +70,12 @@ p {
 
 h1,
 h2 {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-weight: 400;
   letter-spacing: -0.035em;
 }
 
+/* estrutura geral: sidebar + conteúdo */
 .workspace-shell {
   min-height: 100vh;
   display: flex;
@@ -182,6 +185,7 @@ h2 {
   flex: 1;
 }
 
+/* barra do topo */
 .topbar {
   height: 68px;
   padding: 0 5%;
@@ -220,6 +224,7 @@ h2 {
   color: #8b806e;
 }
 
+/* texto pequeno em maiúsculas acima dos títulos */
 .eyebrow {
   display: block;
   font-size: 10px;
@@ -228,6 +233,7 @@ h2 {
   color: var(--matcha);
 }
 
+/* boas-vindas do início */
 .welcome {
   display: flex;
   justify-content: space-between;
@@ -300,6 +306,7 @@ h2 {
   background: #f0eee7;
 }
 
+/* cards de resumo do dashboard */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -428,6 +435,7 @@ h2 {
   color: #627a55;
 }
 
+/* cards das turmas */
 .class-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
@@ -465,6 +473,7 @@ h2 {
   line-height: 1.5;
 }
 
+/* links de ação (Editar, Abrir...) */
 .link-action,
 .back-link {
   color: var(--matcha);
@@ -485,6 +494,7 @@ h2 {
   margin-bottom: 16px;
 }
 
+/* fundo escuro atrás dos modais */
 .overlay {
   position: fixed;
   inset: 0;
@@ -528,6 +538,7 @@ h2 {
   color: var(--carob);
 }
 
+/* formulários dos modais */
 .form-stack {
   display: grid;
   gap: 16px;
@@ -573,10 +584,12 @@ textarea {
   font-size: 12px;
 }
 
+/* tela de novo planejamento */
 .wizard {
   max-width: 900px;
 }
 
+/* indicador de etapas */
 .stepper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -690,6 +703,7 @@ textarea {
   line-height: 1.5;
 }
 
+/* editor: referência de um lado, texto do outro */
 .editor-grid {
   display: grid;
   grid-template-columns: minmax(220px, 0.38fr) minmax(0, 1fr);
@@ -800,6 +814,7 @@ textarea {
   font-size: 12px;
 }
 
+/* filtros do histórico */
 .history-filters {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -830,6 +845,7 @@ textarea {
   gap: 9px;
 }
 
+/* mensagem de lista vazia */
 .empty-state {
   padding: 35px;
   text-align: center;
@@ -838,6 +854,7 @@ textarea {
   border-radius: 14px;
 }
 
+/* telas médias */
 @media (max-width: 1100px) {
   .sidebar {
     width: 76px;
@@ -876,6 +893,7 @@ textarea {
   }
 }
 
+/* celular */
 @media (max-width: 650px) {
   .workspace-shell {
     display: block;
