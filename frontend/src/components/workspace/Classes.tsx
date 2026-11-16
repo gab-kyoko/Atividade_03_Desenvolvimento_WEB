@@ -17,7 +17,7 @@ export function Classes({
   onSave,
 }: {
   turmas: Turma[];
-  onSave: (turma: Turma) => void;
+  onSave: (turma: Turma) => Promise<void>;
 }) {
   // turma sendo editada (null = cadastro novo)
   const [editing, setEditing] = useState<Turma | null>(null);
@@ -26,6 +26,7 @@ export function Classes({
   // alunos fica string por causa do input
   const [form, setForm] = useState(blank);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   // abre o modal, já preenchido se for edição
   const show = (turma?: Turma) => {
     setEditing(turma ?? null);
@@ -34,22 +35,29 @@ export function Classes({
     setOpen(true);
   };
   // valida tudo antes de salvar
-  const submit = (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (
-      Object.values(form).some((v) => !String(v).trim()) ||
-      Number(form.alunos) < 1
-    ) {
-      setError("Preencha todos os campos e informe a quantidade de alunos.");
+    if (form.nome.trim().length < 2 || form.disciplina.trim().length < 2 ||
+        [form.dominios, form.dificuldades, form.interesses].some(value => value.trim().length < 5) ||
+        !Number.isInteger(Number(form.alunos)) || Number(form.alunos) < 1 || Number(form.alunos) > 100) {
+      setError("Preencha turma e disciplina, descreva o perfil com pelo menos 5 caracteres e informe de 1 a 100 alunos.");
       return;
     }
     // mantém o id se for edição
-    onSave({
-      ...form,
-      alunos: Number(form.alunos),
-      id: editing?.id ?? Date.now(),
-    });
-    setOpen(false);
+    setSaving(true);
+    setError("");
+    try {
+      await onSave({
+        ...form,
+        alunos: Number(form.alunos),
+        id: editing?.id ?? Date.now(),
+      });
+      setOpen(false);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Falha ao salvar turma.");
+    } finally {
+      setSaving(false);
+    }
   };
   return (
     <>
@@ -118,7 +126,7 @@ export function Classes({
                 ×
               </button>
             </div>
-            <form onSubmit={submit} className="form-stack" noValidate>
+            <form onSubmit={(event) => void submit(event)} className="form-stack" noValidate>
               <div className="form-row">
                 <label>
                   Turma
@@ -183,8 +191,8 @@ export function Classes({
                   {error}
                 </p>
               )}
-              <button className="primary-action" type="submit">
-                Salvar turma
+              <button className="primary-action" type="submit" disabled={saving}>
+                {saving ? "Salvando..." : "Salvar turma"}
               </button>
             </form>
           </section>

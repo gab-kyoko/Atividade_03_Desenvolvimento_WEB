@@ -5,11 +5,13 @@ export function Dashboard({
   turmas,
   planos,
   onNew,
+  onClasses,
   onOpen,
 }: {
   turmas: Turma[];
   planos: Plano[];
   onNew: () => void;
+  onClasses: () => void;
   onOpen: (id: number) => void;
 }) {
   // só os rascunhos
@@ -32,8 +34,8 @@ export function Dashboard({
             <em>Vamos continuar?</em>
           </h1>
           <p>Retome uma ideia ou prepare uma nova aula em poucos passos.</p>
-          <button className="primary-action" onClick={onNew}>
-            + Criar Novo Plano Adaptado
+          <button className="primary-action" onClick={turmas.length ? onNew : onClasses}>
+            {turmas.length ? "+ Criar Novo Plano Adaptado" : "+ Cadastrar primeira turma"}
           </button>
         </div>
         <div className="welcome-art" aria-hidden="true">

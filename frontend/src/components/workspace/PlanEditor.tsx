@@ -30,7 +30,7 @@ export function PlanEditor({
 }: {
   plano: Plano;
   turma?: Turma;
-  onSave: (plano: Plano) => void;
+  onSave: (plano: Plano) => Promise<void>;
   onBack: () => void;
   token: string;
 }) {
@@ -44,6 +44,7 @@ export function PlanEditor({
   const [note, setNote] = useState("");
   const [notice, setNotice] = useState("");
   const [generatingMaterial, setGeneratingMaterial] = useState(false);
+  const [saving, setSaving] = useState(false);
   const generateMaterial = async () => {
     if (!turma) {
       setNotice("Selecione uma turma para gerar o material de apoio.");
@@ -89,10 +90,10 @@ export function PlanEditor({
   // atualiza só a seção que mudou
   const update = (key: Secao, value: string) =>
     setDraft((old) => ({ ...old, secoes: { ...old.secoes, [key]: value } }));
-  // salva como rascunho ou aplicado, não deixa seção vazia
-  const save = (status: Plano["status"]) => {
-    if (Object.values(draft.secoes).some((v) => !v.trim())) {
-      setNotice("Preencha as três seções antes de salvar.");
+  // Salva apenas depois que a API confirma a gravação.
+  const save = async (status: Plano["status"]) => {
+    if (Object.values(draft.secoes).some((value) => value.trim().length < 20)) {
+      setNotice("Escreva pelo menos 20 caracteres em cada seção antes de salvar.");
       return;
     }
     const saved = {
@@ -101,14 +102,18 @@ export function PlanEditor({
       atualizado: new Date().toISOString().slice(0, 10),
       ...(status === "Aplicado" ? { aplicadoEm: date, observacao: note } : {}),
     };
-    onSave(saved);
-    setDraft(saved);
-    setNotice(
-      status === "Aplicado"
-        ? "Plano marcado como aplicado."
-        : "Rascunho salvo nesta sessão.",
-    );
-    setApplying(false);
+    setSaving(true);
+    setNotice("");
+    try {
+      await onSave(saved);
+      setDraft(saved);
+      setNotice(status === "Aplicado" ? "Plano marcado como aplicado." : "Rascunho salvo.");
+      setApplying(false);
+    } catch (cause) {
+      setNotice(cause instanceof Error ? cause.message : "Falha ao salvar plano.");
+    } finally {
+      setSaving(false);
+    }
   };
   return (
     <>
@@ -169,21 +174,6 @@ export function PlanEditor({
                   <h2>{section.title}</h2>
                   <p>{section.hint}</p>
                 </div>
-                <button
-                  className="link-action"
-                  onClick={() => {
-                    // texto fixo simulando a regeneração
-                    update(
-                      section.key,
-                      `Ideia demonstrativa para ${section.title.toLowerCase()}: retome ${draft.titulo.toLowerCase()} com exemplos próximos de ${turma?.nome}. Revise e personalize este texto antes de usar.`,
-                    );
-                    setNotice(
-                      "Seção substituída por uma sugestão demonstrativa.",
-                    );
-                  }}
-                >
-                  ↻ Regenerar seção
-                </button>
               </div>
               <textarea
                 aria-label={section.title}
@@ -205,11 +195,11 @@ export function PlanEditor({
         <button className="secondary-action" onClick={() => void generateMaterial()} disabled={generatingMaterial}>
           {generatingMaterial ? "Gerando material..." : "Gerar material de apoio (.docx)"}
         </button>
-        <button className="secondary-action" onClick={() => setApplying(true)}>
+        <button className="secondary-action" onClick={() => setApplying(true)} disabled={saving}>
           Marcar como Aplicado
         </button>
-        <button className="primary-action" onClick={() => save("Rascunho")}>
-          Salvar Rascunho
+        <button className="primary-action" onClick={() => void save("Rascunho")} disabled={saving}>
+          {saving ? "Salvando..." : "Salvar Rascunho"}
         </button>
       </div>
       {/* modal pra registrar data e observação */}
@@ -252,11 +242,12 @@ export function PlanEditor({
               </label>
               <button
                 className="primary-action"
-                onClick={() =>
+                onClick={() => void (
                   date
                     ? save("Aplicado")
                     : setNotice("Selecione a data da aula.")
-                }
+                )}
+                disabled={saving}
               >
                 Confirmar aplicação
               </button>

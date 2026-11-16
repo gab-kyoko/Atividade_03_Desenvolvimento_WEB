@@ -11,7 +11,7 @@ export function History({
   planos: Plano[];
   turmas: Turma[];
   onOpen: (id: number) => void;
-  onDuplicate: (id: number, turmaId: number) => void;
+  onDuplicate: (id: number, turmaId: number) => Promise<void>;
 }) {
   // filtros ('all' = sem filtro)
   const [classId, setClassId] = useState("all");
@@ -21,6 +21,8 @@ export function History({
   // plano sendo duplicado (null = modal fechado)
   const [duplicateId, setDuplicateId] = useState<number | null>(null);
   const [targetId, setTargetId] = useState(turmas[0]?.id ?? 0);
+  const [duplicateError, setDuplicateError] = useState("");
+  const [duplicating, setDuplicating] = useState(false);
   // aplica os 4 filtros e deixa o mais recente primeiro
   const visible = planos
     .filter((p) => {
@@ -122,6 +124,7 @@ export function History({
                   className="link-action"
                   onClick={() => {
                     setDuplicateId(p.id);
+                    setDuplicateError("");
                     // sugere uma turma diferente da original
                     setTargetId(
                       turmas.find((t) => t.id !== p.turmaId)?.id ?? p.turmaId,
@@ -179,13 +182,19 @@ export function History({
             </label>
             <button
               className="primary-action"
+              disabled={duplicating}
               onClick={() => {
-                onDuplicate(duplicateId, targetId);
-                setDuplicateId(null);
+                setDuplicating(true);
+                setDuplicateError("");
+                void onDuplicate(duplicateId, targetId)
+                  .then(() => setDuplicateId(null))
+                  .catch(cause => setDuplicateError(cause instanceof Error ? cause.message : "Falha ao duplicar plano."))
+                  .finally(() => setDuplicating(false));
               }}
             >
-              Duplicar e revisar
+              {duplicating ? "Duplicando..." : "Duplicar e revisar"}
             </button>
+            {duplicateError && <p role="alert" className="form-error">{duplicateError}</p>}
           </section>
         </div>
       )}

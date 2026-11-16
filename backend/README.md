@@ -1,4 +1,4 @@
-# API Entrelinhas — Sprint 2
+# API Entrelinha
 
 ## Sprint 3
 
@@ -6,7 +6,7 @@ O backend agora inclui SQLModel (SQLite local ou PostgreSQL via `DATABASE_URL`),
 
 Endpoints autenticados: `GET/POST/PUT /api/v1/turmas`, `GET/POST/PUT /api/v1/planos`, `POST /api/v1/planos/sugerir` e `POST /api/v1/planos/material-apoio`. Este último recebe os dados da sugestão mais `titulo` e `secoes` do plano revisado e devolve uma folha de apoio editável em `.docx`. Cadastro e login: `POST /api/v1/auth/register` e `/login`, enviando JSON com `email` e `password`. Use o `access_token` retornado como `Authorization: Bearer <token>`.
 
-FastAPI que recebe material do RCO, objetivo pedagógico e perfil da turma e solicita ao Gemini uma sugestão estruturada em abertura, desenvolvimento e fechamento. O docente revisa o texto antes de aplicar. Nenhum plano é persistido nesta sprint.
+FastAPI que recebe material do RCO, objetivo pedagógico e perfil da turma e solicita ao Gemini uma sugestão estruturada em abertura, desenvolvimento e fechamento. O docente revisa o texto antes de aplicar. Turmas e planos são salvos por usuário no banco configurado.
 
 ## Rodar localmente
 
@@ -48,4 +48,4 @@ O `render.yaml` na raiz configura um Web Service Python com diretório raiz `bac
 4. Informe `GEMINI_API_KEY` no campo secreto solicitado pelo Render. Não coloque a chave em `.env.example` nem em `NEXT_PUBLIC_*`.
 5. Depois da publicação, abra a URL `/health` e a URL `/docs`. Em `/docs`, envie o exemplo acima para `POST /api/v1/planos/sugerir` e confirme uma resposta com as três seções.
 
-Atualize `CORS_ORIGINS` com a URL pública do frontend antes da Sprint 3. Um serviço gratuito pode demorar para iniciar após um período ocioso.
+Configure `CORS_ORIGINS` com a URL pública do frontend. Um serviço gratuito pode demorar para iniciar após um período ocioso.

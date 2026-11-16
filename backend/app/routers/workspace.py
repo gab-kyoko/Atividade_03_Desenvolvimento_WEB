@@ -1,34 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from app.auth import current_user
 from app.database import get_session
 from app.models import ClassRoom, LessonPlan, User
-from app.schemas.planning import SecoesPlano
+from app.schemas.workspace import ClassInput, PlanInput
 
 router = APIRouter(prefix="/api/v1", tags=["Área docente"])
-
-
-class ClassInput(BaseModel):
-    nome: str
-    disciplina: str
-    alunos: int
-    dominios: str
-    dificuldades: str
-    interesses: str
-
-
-class PlanInput(BaseModel):
-    turmaId: int
-    titulo: str
-    material: str
-    objetivo: str
-    status: str = "Rascunho"
-    atualizado: str
-    secoes: SecoesPlano
-    aplicadoEm: str | None = None
-    observacao: str | None = None
 
 
 def plan_output(plan: LessonPlan) -> dict:
@@ -40,6 +18,7 @@ def plan_output(plan: LessonPlan) -> dict:
 
 
 def owned_class(session: Session, class_id: int, user_id: int) -> ClassRoom:
+    # Cada docente acessa apenas as próprias turmas.
     item = session.get(ClassRoom, class_id)
     if not item or item.owner_id != user_id:
         raise HTTPException(404, "Turma não encontrada.")

@@ -10,7 +10,7 @@ export function PlanWizard({
   token,
 }: {
   turmas: Turma[];
-  onCreate: (plano: Plano) => void;
+  onCreate: (plano: Plano) => Promise<void>;
   token: string;
 }) {
   // etapa atual (1 a 3)
@@ -49,7 +49,7 @@ export function PlanWizard({
       if (!response.ok || !("secoes" in body)) {
         throw new Error("detail" in body ? body.detail : "Não foi possível gerar a sugestão.");
       }
-      onCreate({
+      await onCreate({
         id: Date.now(),
         turmaId,
         titulo: body.titulo,

@@ -16,7 +16,7 @@ npm run dev
 
 Abra http://localhost:3000. Para gerar a versão estática, use `npm run build` dentro de `frontend/`; os arquivos ficam em `frontend/out/`. Os comandos da raiz mantêm compatibilidade com os serviços Render já configurados e copiam a saída para `out/`.
 
-Para a sugestão por IA, copie `frontend/.env.example` para `frontend/.env.local` e configure `NEXT_PUBLIC_API_URL` com a URL pública da API (ou `http://localhost:8000` durante o desenvolvimento local). No Render, a variável já está configurada nos frontends existentes. A chave `GEMINI_API_KEY` permanece somente no backend/Render.
+Copie `frontend/.env.example` para `frontend/.env.local` e configure `NEXT_PUBLIC_API_URL` com a URL pública da API (ou `http://localhost:8000` durante o desenvolvimento local). No Render, essa variável deve estar configurada no serviço do frontend **antes do build**. A chave `GEMINI_API_KEY` permanece somente no serviço do backend.
 
 Para executar a API localmente, em outro terminal:
 
@@ -26,6 +26,8 @@ python -m venv .venv
 # ative o ambiente virtual conforme seu sistema
 pip install -r requirements.txt
 # configure GEMINI_API_KEY e JWT_SECRET (mínimo de 32 caracteres) no ambiente
+# configure CORS_ORIGINS com a origem do frontend publicado
+# configure DATABASE_URL com PostgreSQL em produção
 uvicorn app.main:app --reload
 ```
 
@@ -36,10 +38,13 @@ O banco local usa SQLite (`backend/entrelinha.db`). Em produção, configure `DA
 - `frontend/src/app`: página, layout e estilos.
 - `frontend/src/components/ui`: botão, campo e cartão reutilizáveis.
 - `frontend/src/components/workspace`: dashboard, turmas, fluxo guiado, editor e histórico.
-- `frontend/src/data/workspaceMock.ts`: turmas e planos demonstrativos.
 - `frontend/src/types/workspace.ts`: formatos compartilhados pela interface.
 - `backend/`: API FastAPI e integração Gemini.
 
 ## Sprint 3
 
-O frontend usa cadastro e login, envia JWT à API e salva turmas e planos no banco por usuário. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Na revisão do plano, a opção **Gerar material de apoio** cria uma folha de atividades e perguntas em `.docx` editável para a turma. Os dados mockados da Sprint 1 permanecem no código como referência, mas a área autenticada consulta os dados persistidos.
+O frontend usa cadastro e login, envia JWT às rotas protegidas e carrega turmas e planos da API. Não há dados mockados na interface publicada. A sugestão com IA retorna abertura, desenvolvimento e fechamento para revisão docente. Na revisão do plano, a opção **Gerar material de apoio** cria uma folha de atividades e perguntas em `.docx` editável para a turma.
+
+Publicação: [frontend](https://entrelinhas-at3-zmth.onrender.com) e [API](https://entrelinhas-api-sic8.onrender.com/health). No Render, configure `NEXT_PUBLIC_API_URL` no frontend e `CORS_ORIGINS`, `JWT_SECRET`, `DATABASE_URL` e `GEMINI_API_KEY` na API. `CORS_ORIGINS` recebe as origens completas, separadas por vírgula. `DATABASE_URL` deve apontar para PostgreSQL; o SQLite local não preserva dados após reinícios do serviço gratuito. O login e a geração por IA precisam das duas aplicações publicadas.
+
+Para a review, crie uma conta, cadastre uma turma, gere um plano com IA, revise e salve. Saia e entre novamente para conferir a leitura dos dados persistidos. Os comandos de teste são `python -m pytest` em `backend/` e `npm run build` em `frontend/`.

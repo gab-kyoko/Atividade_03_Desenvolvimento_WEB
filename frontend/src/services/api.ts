@@ -7,7 +7,8 @@ export async function apiRequest<T>(path: string, token: string, method = "GET",
     headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Falha na comunicação com a API.");
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data && typeof data.detail === "string" ? data.detail : "Falha na comunicação com a API.");
+  if (data === null) throw new Error("A API retornou uma resposta inválida.");
   return data as T;
 }
